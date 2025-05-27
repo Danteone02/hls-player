@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HLS Player</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      height: 100%;
+      overflow: hidden;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+  <video id="video" controls autoplay muted playsinline></video>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12"></script>
+  <script>
+    const video = document.getElementById('video');
+    const hlsUrl = decodeURIComponent(new URLSearchParams(window.location.search).get("url") || '');
+
+    if (!hlsUrl) {
+      video.outerHTML = '<p style="color:white;text-align:center;padding-top:20%">Erro: nenhum link HLS (.m3u8) foi informado.</p>';
+    } else if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(hlsUrl);
+      hls.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = hlsUrl;
+    } else {
+      video.outerHTML = '<p style="color:white;text-align:center;padding-top:20%">Seu navegador não suporta HLS.</p>';
+    }
+  </script>
+</body>
+</html>
